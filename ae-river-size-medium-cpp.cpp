@@ -11,8 +11,8 @@ class Solution {
 
 public:
 	std::vector<int> riverSizes(std::vector<std::vector<int>> matrix);
-	void traverseNode(int i, int j, std::vector<std::vector<int>> matrix, std::vector<std::vector<int>>& visited, std::vector<int>& results);
-	std::vector<std::vector<int>> getUnivisitedNeighbors(int i, int j, std::vector<std::vector<int>> &matrix, std::vector<std::vector<int>>& visited);
+	void traverseNode(int i, int j, std::vector<std::vector<int>> matrix, std::vector<std::vector<int>> &visited, std::vector<int>& results);
+	std::vector<std::vector<int>> getUnivisitedNeighbors(int i, int j, std::vector<std::vector<int>> matrix, std::vector<std::vector<int>>& visited);
 };
 
 
@@ -20,7 +20,7 @@ public:
 
 
 
-std::vector<std::vector<int>> Solution::getUnivisitedNeighbors(int i, int j, std::vector<std::vector<int>>& matrix, std::vector<std::vector<int>>& visited) {
+std::vector<std::vector<int>> Solution::getUnivisitedNeighbors(int i, int j, std::vector<std::vector<int>> matrix, std::vector<std::vector<int>>& visited) {
 	//Create an empty 2D vector which will hold all of the unvisited node coordinates
 	std::vector<std::vector<int>> unvisitedNeighbors = {};
 
@@ -59,7 +59,7 @@ std::vector<std::vector<int>> Solution::getUnivisitedNeighbors(int i, int j, std
 	//j < matrix.size()-1 accounts for nodes at column 3 since colmun 4 does not have
 	//any nodes to the right of it
 	//We also want to check the visited matrix to make sure it is not visited
-	if (j < matrix.size() - 1 && !visited[i][j + 1]) {
+	if (j < matrix[0].size() - 1 && !visited[i][j + 1]) {
 		unvisitedNeighbors.push_back({ i,j + 1 });
 	}
 
@@ -98,6 +98,7 @@ void Solution::traverseNode(int i, int j, std::vector<std::vector<int>> matrix, 
 		//That does not necessarily mean the children nodes have not been visited yet
 		//So we explicitly have to check if the children nodes have been visited
 		if (visited[i][j]) {
+			nodesToExplore.erase(nodesToExplore.begin());
 			continue;
 		}
 
@@ -153,20 +154,20 @@ std::vector<int> Solution::riverSizes(std::vector<std::vector<int>> matrix) {
 
 	//We need to create a identical 2D matrix that is initialized to all 0's
 	//To represent that we have not visited any nodes yet
-	std::vector<std::vector<int>> visited = matrix;
+	std::vector<std::vector<int>> visited(matrix.size(), std::vector<int>(matrix[0].size(), 0));
 
-	for (int i = 0; i < matrix.size(); i++) {
+	/*for (int i = 0; i < matrix.size(); i++) {
 		for (int j = 0; j < matrix.size(); j++) {
 
 			visited[i][j] = 0;
 
 		}
-	}
+	}*/
 
 	//Once visited is initialized to 0, we can start visiting the nodes inside
 	//of the matrix 2D vector
 	for (int i = 0; i < matrix.size(); i++) {
-		for (int j = 0; j < matrix.size(); j++) {
+		for (int j = 0; j < matrix[0].size(); j++) {
 
 			//At every Node that we are at, we want to check if it has been visited
 			if (visited[i][j]) {
@@ -194,18 +195,17 @@ int main() {
 	Solution solution;
 
 	std::vector<std::vector<int>> matrix = { {1, 0, 0, 1, 0},{1, 0, 1, 0, 0},{0, 0, 1, 0, 1},{1, 0, 1, 0, 1},{1, 0, 1, 1, 0} };
+	
+	std::vector<std::vector<int>> matrix2 = { {1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0},{1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0},{0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1},{1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0},{1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1} };
 
-	std::vector<int> results = solution.riverSizes(matrix);
+	std::vector<std::vector<int>> matrix3 = { { 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0 } };
+
+	std::vector<int> results = solution.riverSizes(matrix2);
 
 	for (int x : results) {
 
 		std::cout << x << ' ';
 	}
-
-
-
-
-
 
 	return 0;
 }
