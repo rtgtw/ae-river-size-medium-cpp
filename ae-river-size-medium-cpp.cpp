@@ -10,9 +10,9 @@
 class Solution {
 
 public:
-	std::vector<int> riverSizes(std::vector<std::vector<int>> &matrix);
-	void traverseNode(int i, int j, std::vector<std::vector<int>> &matrix, std::vector<std::vector<int>> &visited, std::vector<int>& results);
-	std::vector<std::vector<int>> getUnivisitedNeighbors(int i, int j, std::vector<std::vector<int>> &matrix, std::vector<std::vector<int>>& visited);
+	int numsIslands(std::vector<std::vector<char>> &grid);
+	void traverseNode(int i, int j, std::vector<std::vector<char>> &grid, std::vector<std::vector<int>> &visited, int& results);
+	std::vector<std::vector<int>> getUnivisitedNeighbors(int i, int j, std::vector<std::vector<char>> &grid, std::vector<std::vector<int>>& visited);
 };
 
 
@@ -20,7 +20,7 @@ public:
 
 
 
-std::vector<std::vector<int>> Solution::getUnivisitedNeighbors(int i, int j, std::vector<std::vector<int>> &matrix, std::vector<std::vector<int>>& visited) {
+std::vector<std::vector<int>> Solution::getUnivisitedNeighbors(int i, int j, std::vector<std::vector<char>> &grid, std::vector<std::vector<int>>& visited) {
 	//Create an empty 2D vector which will hold all of the unvisited node coordinates
 	std::vector<std::vector<int>> unvisitedNeighbors = {};
 
@@ -38,7 +38,7 @@ std::vector<std::vector<int>> Solution::getUnivisitedNeighbors(int i, int j, std
 	//i < matrix.size() - 1 only accounts for nodes at row 3 since row 4
 	//does not have any nodes below it,
 	//We also want to check the visited matrix to make sure it is not visted
-	if (i < matrix.size() - 1 && !visited[i + 1][j]) {
+	if (i < grid.size() - 1 && !visited[i + 1][j]) {
 
 		//if this is true, append this child to the unvisitedNeighbor
 		unvisitedNeighbors.push_back({ i + 1,j });
@@ -59,7 +59,7 @@ std::vector<std::vector<int>> Solution::getUnivisitedNeighbors(int i, int j, std
 	//j < matrix.size()-1 accounts for nodes at column 3 since colmun 4 does not have
 	//any nodes to the right of it
 	//We also want to check the visited matrix to make sure it is not visited
-	if (j < matrix[0].size() - 1 && !visited[i][j + 1]) {
+	if (j < grid[0].size() - 1 && !visited[i][j + 1]) {
 		unvisitedNeighbors.push_back({ i,j + 1 });
 	}
 
@@ -67,7 +67,7 @@ std::vector<std::vector<int>> Solution::getUnivisitedNeighbors(int i, int j, std
 	return unvisitedNeighbors;
 }
 
-void Solution::traverseNode(int i, int j, std::vector<std::vector<int>> &matrix, std::vector<std::vector<int>>& visited, std::vector<int>& results) {
+void Solution::traverseNode(int i, int j, std::vector<std::vector<char>> & grid, std::vector<std::vector<int>>& visited, int& results) {
 
 	//We want to initialize a current river size, to take the count of the river, if it is a river
 	//Before we start we can say its 0
@@ -107,7 +107,7 @@ void Solution::traverseNode(int i, int j, std::vector<std::vector<int>> &matrix,
 		visited[i][j] = 1;
 
 		//Now we can check if the node is a river(1) or land(0), if its land the move on
-		if (matrix[i][j] == 0) {
+		if (grid[i][j] == '0') {
 			//pop it from the stack and the move on
 			nodesToExplore.erase(nodesToExplore.begin());
 			continue;
@@ -121,7 +121,7 @@ void Solution::traverseNode(int i, int j, std::vector<std::vector<int>> &matrix,
 		//Now we need to get all of othe unvisted neighbors of this river node
 		//We can create another helper function to help us find this
 		//This helper function should give us an array all of the unvisited neighbors to nodes to explore
-		std::vector<std::vector<int>> unvisitedNeighbors = getUnivisitedNeighbors(i, j, matrix, visited);
+		std::vector<std::vector<int>> unvisitedNeighbors = getUnivisitedNeighbors(i, j, grid, visited);
 
 		//Once we have all of the unvisited neighbors we want to append them into our
 		//Nodes to explore matrix
@@ -139,35 +139,27 @@ void Solution::traverseNode(int i, int j, std::vector<std::vector<int>> &matrix,
 	}
 	//Then we can append the river size to our result matrix
 	if (riverSize > 0) {
-		results.push_back(riverSize);
+		results++;
 	}
 
 
 }
 
 
-std::vector<int> Solution::riverSizes(std::vector<std::vector<int>> &matrix) {
+int Solution::numsIslands(std::vector<std::vector<char>> &grid) {
 	//The first thing we want to do is declare a vector for our results
 	//Which are the sizes of rivers that are within the matrix
-	std::vector<int> results;
+	int results = 0;
 
 
 	//We need to create a identical 2D matrix that is initialized to all 0's
 	//To represent that we have not visited any nodes yet
-	std::vector<std::vector<int>> visited(matrix.size(), std::vector<int>(matrix[0].size(), 0));
-
-	/*for (int i = 0; i < matrix.size(); i++) {
-		for (int j = 0; j < matrix.size(); j++) {
-
-			visited[i][j] = 0;
-
-		}
-	}*/
+	std::vector<std::vector<int>> visited(grid.size(), std::vector<int>(grid[0].size(), 0));
 
 	//Once visited is initialized to 0, we can start visiting the nodes inside
 	//of the matrix 2D vector
-	for (int i = 0; i < matrix.size(); i++) {
-		for (int j = 0; j < matrix[0].size(); j++) {
+	for (int i = 0; i < grid.size(); i++) {
+		for (int j = 0; j < grid[0].size(); j++) {
 
 			//At every Node that we are at, we want to check if it has been visited
 			if (visited[i][j]) {
@@ -178,7 +170,7 @@ std::vector<int> Solution::riverSizes(std::vector<std::vector<int>> &matrix) {
 				//if it has not been visited, then we call a helperFunction
 				//to actually traverse the node
 				//we want to pass in the indexes, the matrix, visited and result array
-				traverseNode(i,j,matrix, visited, results);
+				traverseNode(i,j, grid, visited, results);
 			}
 
 		}
@@ -200,12 +192,20 @@ int main() {
 
 	std::vector<std::vector<int>> matrix3 = { { 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0 } };
 
-	std::vector<int> results = solution.riverSizes(matrix2);
+	std::vector<std::vector<int>> matrix4 = { {1,1,1,1,0},{1,1,0,1,0},{1,1,0,0,0},{0,0,0,0,0} };
 
-	for (int x : results) {
+	std::vector<std::vector<int>> matrix5 = { {1,1,0,0,0},{1,1,0,0,0},{0,0,1,0,0},{0,0,0,1,1} };
 
-		std::cout << x << ' ';
-	}
+	std::vector<std::vector<char>> matrix6 = { {'1','1','0','0','0'},{'1','1','0','0','0'},{'0','0','1','0','0'},{'0','0','0','1','1'}};
+
+	int results = solution.numsIslands(matrix6);
+
+	std::cout << results;
+
+
+
+	//Time O(n)
+	//Space O(n)
 
 	return 0;
 }
