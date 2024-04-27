@@ -10,9 +10,9 @@
 class Solution {
 
 public:
-	std::vector<int> riverSizes(std::vector<std::vector<int>> matrix);
-	void traverseNode(int i, int j, std::vector<std::vector<int>> matrix, std::vector<std::vector<int>> &visited, std::vector<int>& results);
-	std::vector<std::vector<int>> getUnivisitedNeighbors(int i, int j, std::vector<std::vector<int>> matrix, std::vector<std::vector<int>>& visited);
+	std::vector<int> riverSizes(std::vector<std::vector<int>> &matrix);
+	void traverseNode(int i, int j, std::vector<std::vector<int>> &matrix, std::vector<std::vector<int>> &visited, std::vector<int>& results);
+	std::vector<std::vector<int>> getUnivisitedNeighbors(int i, int j, std::vector<std::vector<int>> &matrix, std::vector<std::vector<int>>& visited);
 };
 
 
@@ -20,7 +20,7 @@ public:
 
 
 
-std::vector<std::vector<int>> Solution::getUnivisitedNeighbors(int i, int j, std::vector<std::vector<int>> matrix, std::vector<std::vector<int>>& visited) {
+std::vector<std::vector<int>> Solution::getUnivisitedNeighbors(int i, int j, std::vector<std::vector<int>> &matrix, std::vector<std::vector<int>>& visited) {
 	//Create an empty 2D vector which will hold all of the unvisited node coordinates
 	std::vector<std::vector<int>> unvisitedNeighbors = {};
 
@@ -67,7 +67,7 @@ std::vector<std::vector<int>> Solution::getUnivisitedNeighbors(int i, int j, std
 	return unvisitedNeighbors;
 }
 
-void Solution::traverseNode(int i, int j, std::vector<std::vector<int>> matrix, std::vector<std::vector<int>>& visited, std::vector<int>& results) {
+void Solution::traverseNode(int i, int j, std::vector<std::vector<int>> &matrix, std::vector<std::vector<int>>& visited, std::vector<int>& results) {
 
 	//We want to initialize a current river size, to take the count of the river, if it is a river
 	//Before we start we can say its 0
@@ -146,7 +146,7 @@ void Solution::traverseNode(int i, int j, std::vector<std::vector<int>> matrix, 
 }
 
 
-std::vector<int> Solution::riverSizes(std::vector<std::vector<int>> matrix) {
+std::vector<int> Solution::riverSizes(std::vector<std::vector<int>> &matrix) {
 	//The first thing we want to do is declare a vector for our results
 	//Which are the sizes of rivers that are within the matrix
 	std::vector<int> results;
